@@ -1,8 +1,10 @@
 spring:
+  application:
+    name: Mover
   datasource:
     url: jdbc:mysql://localhost:3306/moverdb
     username: root
-    password: WJ28@krhps
+    password: "#KRBarman2004"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -12,22 +14,10 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            client-id: 13945596881-ltp87vor2mk1h8mu255noeom3egp3kd0.apps.googleusercontent.com
-            client-secret: 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
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
-            scope:
-              - openid
-              - email
-              - profile
-        provider:
-          google:
-            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
-            token-uri: https://oauth2.googleapis.com/token
-            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-            user-name-attribute: sub
+  server:
+     port: 5631
+     error:
+       whitelabel:
+          enabled: false
+  thymeleaf:
+    cache: false
