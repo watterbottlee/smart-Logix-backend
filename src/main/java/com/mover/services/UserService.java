@@ -1,17 +1,11 @@
 package com.mover.services;
 
-import com.mover.entities.User;
-import com.mover.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.mover.payloads.UserDto;
 
-@Service
-public class UserService {
-
-    @Autowired
-    private UserRepository userRepository;
-
-    public User saveUser(User user) {
-        return userRepository.save(user);
-    }
+public interface UserService {
+    UserDto createUser(UserDto userDto);
+    UserDto updateUser(Long userId, UserDto userDto);
+    UserDto getUserById(Long userId);
+    UserDto getUserByEmail(Long emailId);
+    void deleteUser(Long userId);
 }
