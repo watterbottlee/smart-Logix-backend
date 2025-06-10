@@ -1,27 +1,15 @@
 package com.mover.services;
 
-import com.mover.entities.Order;
-import com.mover.repositories.OrderRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.mover.payloads.OrderDto;
 
-@Service
-public class OrderService {
+import java.util.List;
 
-    @Autowired
-    private OrderRepository orderRepository;
+public interface OrderService {
 
-    public Order createOrder(Order order) {
-        order.setConfirmed(false);
-        return orderRepository.save(order);
-    }
+    OrderDto createOrder(OrderDto orderDto);
+    OrderDto updateOrder(Long orderId, OrderDto orderDto);
+    OrderDto getOrderById(Long orderId);
+    List<OrderDto> getAllOrders(Long userId);
+    Void deleteOrder(Long orderId);
 
-    public Order confirmOrder(Long id) {
-        Order order = orderRepository.findById(id).orElse(null);
-        if (order != null) {
-            order.setConfirmed(true);
-            return orderRepository.save(order);
-        }
-        return null;
-    }
 }
