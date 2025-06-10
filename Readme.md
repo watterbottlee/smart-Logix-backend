@@ -406,8 +406,3 @@ jwt.expiration=3600
 # Server Configuration
 server.port=8080
 ```
-
----
-
-**API Version**: 1.0  
-**Last Updated**: June 2025
