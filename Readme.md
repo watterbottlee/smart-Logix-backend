@@ -338,6 +338,7 @@ PENDING → ACCEPTED → PICKED_UP → IN_TRANSIT → DELIVERED → COMPLETED
 - `BUSINESS_LOGIC_ERROR` - Business rule violation
 - `INTERNAL_SERVER_ERROR` - Server error
 
+
 ## Rate Limiting
 
 - Authentication endpoints: 5 requests/minute per IP
@@ -406,8 +407,77 @@ jwt.expiration=3600
 # Server Configuration
 server.port=8080
 ```
+=======
 
----
+## Rate Limiting
+
+- Authentication endpoints: 5 requests/minute per IP
+- Order creation: 10 requests/hour per user
+- Location updates: 60 requests/minute per transporter
+- General API calls: 1000 requests/hour per user
+
+## Google Maps Integration
+
+The API fully supports Google Maps integration:
+
+### Location Storage
+Both pickup and drop locations store:
+- `latitude` and `longitude` from Google Maps
+- Full address string
+- Contact information
+
+### Distance Calculation
+The cost calculation API uses coordinates to:
+- Calculate exact distances
+- Determine shipping costs
+- Estimate delivery times
+
+### Real-time Tracking
+Transporters can update their location in real-time:
+```http
+PUT /transporters/location
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "latitude": 41.8781,
+  "longitude": -87.6298,
+  "isAvailable": true
+}
+```
+
+## Tech Stack
+
+- **Framework**: Spring Boot 3.x
+- **Database**: PostgreSQL/MySQL
+- **Authentication**: JWT with Spring Security
+- **Documentation**: OpenAPI 3.0
+- **Testing**: JUnit 5, Mockito
+
+## Getting Started
+
+1. Clone the repository
+2. Configure database in `application.properties`
+3. Run `mvn spring-boot:run`
+4. Access API at `http://localhost:8080`
+5. View documentation at `http://localhost:8080/swagger-ui.html`
+
+## Environment Setup
+
+```properties
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/transport_booking
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+
+# JWT Configuration
+jwt.secret=your-256-bit-secret
+jwt.expiration=3600
 
 **API Version**: 1.0  
 **Last Updated**: June 2025
+
+# Server Configuration
+server.port=8080
+```
+
