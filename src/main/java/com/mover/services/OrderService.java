@@ -10,6 +10,6 @@ public interface OrderService {
     OrderDto updateOrder(Long orderId, OrderDto orderDto);
     OrderDto getOrderById(Long orderId);
     List<OrderDto> getAllOrders(Long userId);
-    Void deleteOrder(Long orderId);
+    void deleteOrder(Long orderId);
 
 }

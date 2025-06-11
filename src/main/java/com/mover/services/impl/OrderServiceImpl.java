@@ -53,18 +53,27 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto getOrderById(Long orderId) {
-        return null;
+        Order order = this.orderRepo.findById(orderId)
+                .orElseThrow(()->new ResourceNotFoundException("order","orderId",String.valueOf(orderId)));
+        return this.toOrderDto(order);
     }
 
     @Override
     public List<OrderDto> getAllOrders(Long userId) {
-        return List.of();
+        User user = this.userRepo.findById(userId)
+                .orElseThrow(()->new ResourceNotFoundException("user","user_id",String.valueOf(userId)));
+        List<Order> allOrders = this.orderRepo.findByUserId(userId);
+        List<OrderDto> allOrderDtos = allOrders.stream().map(this::toOrderDto).toList();
+        return allOrderDtos;
     }
 
     @Override
-    public Void deleteOrder(Long orderId) {
-        return null;
+    public void deleteOrder(Long orderId) {
+        Order order = this.orderRepo.findById(orderId)
+                .orElseThrow(()->new ResourceNotFoundException("order","orderId",String.valueOf(orderId)));
+        this.orderRepo.delete(order);
     }
+
     private OrderDto toOrderDto(Order order) {
         if (order == null) {
             return null;
@@ -79,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Map User ID (assuming User entity has getId() method)
         if (order.getUser() != null) {
-            orderDto.setId(order.getUser().getUserId());
+            orderDto.setUserID(order.getUser().getUserId());
         }
         if (order.getPickupLocation() != null) {
             orderDto.setPickupLocation(modelMapper.map(order.getPickupLocation(),(Type) PickupLocationDto.class));

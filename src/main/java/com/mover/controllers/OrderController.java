@@ -1,31 +1,53 @@
-package com.mover.controllers;
+    package com.mover.controllers;
 
-import com.mover.payloads.OrderDto;
-import com.mover.payloads.UserDto;
-import com.mover.services.OrderService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+    import com.mover.exceptions.DeleteResponse;
+    import com.mover.payloads.OrderDto;
+    import com.mover.payloads.UserDto;
+    import com.mover.services.OrderService;
+    import jakarta.validation.Valid;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("order")
-public class OrderController {
+    import java.util.List;
 
-    @Autowired
-    private OrderService orderService;
+    @RestController
+    @RequestMapping("order")
+    public class OrderController {
 
-    @PostMapping("create")
-    public ResponseEntity<OrderDto> createUser(@Valid @RequestBody OrderDto orderDto){
-        OrderDto createdOrder = this.orderService.createOrder(orderDto);
-        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+        @Autowired
+        private OrderService orderService;
+
+        @PostMapping("create")
+        public ResponseEntity<OrderDto> createUser(@Valid @RequestBody OrderDto orderDto){
+            OrderDto createdOrder = this.orderService.createOrder(orderDto);
+            return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
+        }
+
+        @PutMapping("update-order/{orderId}")
+        public ResponseEntity<OrderDto> updateUser(
+                @Valid @RequestBody OrderDto orderDto, @PathVariable("orderId") Long orderId){
+            OrderDto updatedOrder = this.orderService.updateOrder(orderId,orderDto);
+            return new ResponseEntity<>(updatedOrder,HttpStatus.OK);
+        }
+
+        @GetMapping("get-all-orders/{userId}")
+        public ResponseEntity<List<OrderDto>> getAllOrders(@PathVariable("userId") Long userId){
+            List<OrderDto> allOrderDtos = this.orderService.getAllOrders(userId);
+            return new ResponseEntity<>(allOrderDtos,HttpStatus.OK);
+        }
+
+        @GetMapping("getorderbyid/{orderId}")
+        public ResponseEntity<OrderDto> getUserById(@PathVariable("orderId") Long orderId){
+            OrderDto orderDto = this.orderService.getOrderById(orderId);
+            return new ResponseEntity<>(orderDto,HttpStatus.OK);
+        }
+
+        @DeleteMapping("delete-order/{orderId}")
+        public ResponseEntity<DeleteResponse> deleteUser(@PathVariable("orderId") Long orderId){
+            this.orderService.deleteOrder(orderId);
+            return new ResponseEntity<>(
+                    new DeleteResponse("order deleted successfully",true),HttpStatus.OK);
+        }
     }
-
-    @PutMapping("update-order/{orderId}")
-    public ResponseEntity<OrderDto> updateUser(
-            @Valid @RequestBody OrderDto orderDto, @PathVariable("orderId") Long orderId){
-        OrderDto updatedOrder = this.orderService.updateOrder(orderId,orderDto);
-        return new ResponseEntity<>(updatedOrder,HttpStatus.OK);
-    }
-}
