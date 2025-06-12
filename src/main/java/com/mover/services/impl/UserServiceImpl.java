@@ -5,6 +5,7 @@ import com.mover.exceptions.ResourceNotFoundException;
 import com.mover.payloads.UserDto;
 import com.mover.repositories.UserRepository;
 import com.mover.services.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,58 +13,52 @@ import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private UserRepository userRepo;
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        User user = this.DtoToUser(userDto);
-        User savedUser = this.userRepo.save(user);
-        return this.userToDto(savedUser);
+        User user = modelMapper.map(userDto, User.class);
+        User savedUser = userRepo.save(user);
+        return modelMapper.map(savedUser, UserDto.class);
     }
+
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
-        User user = this.userRepo.findById(userId)
-                .orElseThrow(()->new ResourceNotFoundException("user","id",userId));
-        user.setId(userDto.getId());
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("user", "id", userId));
 
-        User updatedUser = this.userRepo.save(user);
-        return this.userToDto(updatedUser);
+        modelMapper.map(userDto, user);
+
+        User updatedUser = userRepo.save(user);
+        return modelMapper.map(updatedUser, UserDto.class);
     }
 
     @Override
     public UserDto getUserById(Long userId) {
-        return null;
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "Id", userId));
+        return modelMapper.map(user, UserDto.class);
     }
+
+   @Override
+   public UserDto getUserByEmail(String emailId) {
+       User user = userRepo.findByEmail(emailId)
+               .orElseThrow(() -> new ResourceNotFoundException("User", "email", emailId
+               ));
+       return modelMapper.map(user, UserDto.class);
+
+   }
 
     @Override
-    public UserDto getUserByEmail(Long emailId) {
-        return null;
+    public void deleteUser(Long userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+        userRepo.delete(user);
     }
 
-    @Override
-    public void deleteUser(Long userId){
-
-    }
-    public UserDto userToDto(User user){
-        UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setName(user.getName());
-        userDto.setEmail(user.getEmail());
-        userDto.setPassword(user.getPassword());
-        return userDto;
-    }
-    public User DtoToUser(UserDto userDto){
-        User user = new User();
-        user.setId(userDto.getId());
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
-        return user;
-    }
 }

@@ -19,4 +19,8 @@ public class Order {
     private Long id;
     private String item;
     private boolean confirmed;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transporter_id")
+    private Transporter transporter;
 }

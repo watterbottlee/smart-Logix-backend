@@ -4,7 +4,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/moverdb
     username: root
-    password: "#KRBarman2004"
+    password: "WJ28@krhps"
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
