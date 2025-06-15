@@ -26,6 +26,4 @@ public class VehicleDetails {
     @Column(nullable = false)
     private Integer capacity;
 
-    @Embedded
-    private VehicleDimensions dimensions;
 }

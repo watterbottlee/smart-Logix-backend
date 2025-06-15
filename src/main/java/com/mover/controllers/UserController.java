@@ -20,4 +20,6 @@ public class UserController {
         UserDto createdUser = this.userService.createUser(userDto);
         return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
     }
+
+
 }
