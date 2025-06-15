@@ -1,5 +1,8 @@
-package com.mover.payloads;
+package com.mover.payloads.apirequests;
 
+import com.mover.payloads.DropLocationDto;
+import com.mover.payloads.OrderDetailsDto;
+import com.mover.payloads.PickupLocationDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -13,10 +16,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class OrderDto {
-
+@NoArgsConstructor
+public class OrderRequest {
     private Long id;
 
     @NotNull
@@ -42,6 +44,4 @@ public class OrderDto {
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-    private BigDecimal price;
-    private String status;
 }

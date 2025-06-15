@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -41,5 +42,8 @@ public class Order {
     private LocalDateTime scheduledPickupTime;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    private BigDecimal price;
+    private String status;
 
 }

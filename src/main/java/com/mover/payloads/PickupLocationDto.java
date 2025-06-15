@@ -19,6 +19,9 @@ public class PickupLocationDto {
     private String address;
 
     @NotNull
+    private Long pincode;
+
+    @NotNull
     private BigDecimal latitude;
 
     @NotNull

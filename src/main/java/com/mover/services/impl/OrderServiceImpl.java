@@ -6,9 +6,11 @@ import com.mover.payloads.DropLocationDto;
 import com.mover.payloads.OrderDetailsDto;
 import com.mover.payloads.OrderDto;
 import com.mover.payloads.PickupLocationDto;
+import com.mover.payloads.apirequests.OrderRequest;
 import com.mover.repositories.OrderRepository;
 import com.mover.repositories.UserRepository;
 import com.mover.services.OrderService;
+import com.mover.services.PriceGenerator;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +32,12 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired
+    private PriceGenerator priceGenerator;
+
     @Override
-    public OrderDto createOrder(OrderDto orderDto) {
+    public OrderDto createOrder(OrderRequest orderRequest) {
+        OrderDto orderDto = this.OrderRequestToOrderDto(orderRequest);
         Order order = this.toOrder(orderDto);
         Order savedOrder = this.orderRepo.save(order);
         return this.toOrderDto(savedOrder);
@@ -85,6 +91,8 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setScheduledPickupTime(order.getScheduledPickupTime());
         orderDto.setCreatedAt(order.getCreatedAt());
         orderDto.setUpdatedAt(order.getUpdatedAt());
+        orderDto.setPrice(order.getPrice());
+        orderDto.setStatus(order.getStatus());
 
         // Map User ID (assuming User entity has getId() method)
         if (order.getUser() != null) {
@@ -102,7 +110,6 @@ public class OrderServiceImpl implements OrderService {
         return orderDto;
     }
 
-    // Convert OrderDto to Order entity
     private Order toOrder(OrderDto orderDto) {
         if (orderDto == null) {
             return null;
@@ -117,6 +124,8 @@ public class OrderServiceImpl implements OrderService {
         order.setScheduledPickupTime(orderDto.getScheduledPickupTime());
         order.setCreatedAt(orderDto.getCreatedAt());
         order.setUpdatedAt(orderDto.getUpdatedAt());
+        order.setPrice(orderDto.getPrice());
+        order.setStatus(orderDto.getStatus());
 
         if (orderDto.getUserID() != null) {
             User user = userRepo.findById(orderDto.getUserID())
@@ -136,5 +145,36 @@ public class OrderServiceImpl implements OrderService {
             order.setOrderDetails(modelMapper.map(orderDto.getOrderDetails(), OrderDetails.class));
         }
         return order;
+    }
+
+    private OrderDto OrderRequestToOrderDto(OrderRequest orderRequest){
+        if (orderRequest == null) {
+            return null;
+        }
+        OrderDto orderDto = new OrderDto();
+
+        orderDto.setId(orderRequest.getId());
+        orderDto.setDeliveryType(orderRequest.getDeliveryType());
+        orderDto.setScheduledPickupTime(orderRequest.getScheduledPickupTime());
+        orderDto.setCreatedAt(orderRequest.getCreatedAt());
+        orderDto.setUpdatedAt(orderRequest.getUpdatedAt());
+        orderDto.setPrice(priceGenerator.generatePrice(orderRequest));
+        orderDto.setStatus("active");
+
+        // Map User ID (assuming User entity has getId() method)
+        if (orderRequest.getUserID() != null) {
+            orderDto.setUserID(orderRequest.getUserID());
+        }
+        if (orderRequest.getPickupLocation() != null) {
+            orderDto.setPickupLocation(modelMapper.map(orderRequest.getPickupLocation(),(Type) PickupLocationDto.class));
+        }
+        if (orderRequest.getDropLocation() != null) {
+            orderDto.setDropLocation(modelMapper.map(orderRequest.getDropLocation(), (Type) DropLocationDto.class));
+        }
+        if (orderRequest.getOrderDetails() != null) {
+            orderDto.setOrderDetails(modelMapper.map(orderRequest.getOrderDetails(), (Type) OrderDetailsDto.class));
+        }
+        return orderDto;
+
     }
 }

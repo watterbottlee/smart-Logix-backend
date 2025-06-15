@@ -21,6 +21,7 @@ public class PickupLocation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String address;
+    private Long pincode;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private String contactPerson;

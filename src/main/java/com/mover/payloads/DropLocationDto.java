@@ -19,6 +19,9 @@ public class DropLocationDto {
     private String address;
 
     @NotNull
+    private Long pincode;
+
+    @NotNull
     private BigDecimal latitude;
 
     @NotNull
