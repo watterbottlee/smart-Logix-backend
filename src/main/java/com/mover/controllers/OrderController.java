@@ -3,6 +3,7 @@
     import com.mover.exceptions.DeleteResponse;
     import com.mover.payloads.OrderDto;
     import com.mover.payloads.UserDto;
+    import com.mover.payloads.apirequests.OrderRequest;
     import com.mover.services.OrderService;
     import jakarta.validation.Valid;
     import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,8 @@
         private OrderService orderService;
 
         @PostMapping("create")
-        public ResponseEntity<OrderDto> createUser(@Valid @RequestBody OrderDto orderDto){
-            OrderDto createdOrder = this.orderService.createOrder(orderDto);
+        public ResponseEntity<OrderDto> createUser(@Valid @RequestBody OrderRequest orderRequest){
+            OrderDto createdOrder = this.orderService.createOrder(orderRequest);
             return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
         }
 

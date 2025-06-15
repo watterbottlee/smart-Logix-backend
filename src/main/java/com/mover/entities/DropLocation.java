@@ -23,6 +23,7 @@ public class DropLocation {
     private Long id;
 
     private String address;
+    private Long pincode;
     private BigDecimal latitude;
     private BigDecimal longitude;
     private String contactPerson;
