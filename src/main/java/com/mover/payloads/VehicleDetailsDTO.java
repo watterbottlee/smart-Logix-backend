@@ -1,5 +1,6 @@
 package com.mover.payloads;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mover.entities.VehicleType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
