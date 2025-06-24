@@ -1,4 +1,4 @@
-package com.mover.payloads;
+package com.mover.payloads.orderrelated;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

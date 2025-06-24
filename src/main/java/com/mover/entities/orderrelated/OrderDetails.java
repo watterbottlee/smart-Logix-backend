@@ -1,4 +1,4 @@
-package com.mover.entities;
+package com.mover.entities.orderrelated;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

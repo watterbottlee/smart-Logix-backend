@@ -1,4 +1,4 @@
-package com.mover.entities;
+package com.mover.entities.orderrelated;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,17 +9,24 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Dimensions {
+@Entity
+public class DropLocation {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double length;
-    private Double width;
-    private Double height;
+    private String address;
+    private Long pincode;
+    private BigDecimal latitude;
+    private BigDecimal longitude;
+    private String contactPerson;
+    private Long contactPhone;
+    private String instructions;
 }

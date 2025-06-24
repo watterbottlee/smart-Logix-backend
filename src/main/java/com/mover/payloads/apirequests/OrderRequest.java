@@ -1,8 +1,8 @@
 package com.mover.payloads.apirequests;
 
-import com.mover.payloads.DropLocationDto;
-import com.mover.payloads.OrderDetailsDto;
-import com.mover.payloads.PickupLocationDto;
+import com.mover.payloads.orderrelated.DropLocationDto;
+import com.mover.payloads.orderrelated.OrderDetailsDto;
+import com.mover.payloads.orderrelated.PickupLocationDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -11,7 +11,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter

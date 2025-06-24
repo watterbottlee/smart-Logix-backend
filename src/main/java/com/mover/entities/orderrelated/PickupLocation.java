@@ -1,7 +1,9 @@
-package com.mover.payloads;
+package com.mover.entities.orderrelated;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,27 +13,18 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class PickupLocationDto {
-
-    @NotBlank
+@NoArgsConstructor
+@Entity
+public class PickupLocation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String address;
-
-    @NotNull
     private Long pincode;
-
-    @NotNull
     private BigDecimal latitude;
-
-    @NotNull
     private BigDecimal longitude;
-
-    @NotBlank
     private String contactPerson;
-
-    @NotNull
     private Long contactPhone;
-
     private String instructions;
 }

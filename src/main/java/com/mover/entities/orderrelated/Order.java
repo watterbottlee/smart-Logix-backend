@@ -1,5 +1,6 @@
-package com.mover.entities;
+package com.mover.entities.orderrelated;
 
+import com.mover.entities.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

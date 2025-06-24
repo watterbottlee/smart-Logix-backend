@@ -1,9 +1,7 @@
-package com.mover.entities;
+package com.mover.payloads.orderrelated;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,20 +11,27 @@ import java.math.BigDecimal;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class DropLocation {
+@AllArgsConstructor
+public class PickupLocationDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    @NotBlank
     private String address;
+
+    @NotNull
     private Long pincode;
+
+    @NotNull
     private BigDecimal latitude;
+
+    @NotNull
     private BigDecimal longitude;
+
+    @NotBlank
     private String contactPerson;
+
+    @NotNull
     private Long contactPhone;
+
     private String instructions;
 }

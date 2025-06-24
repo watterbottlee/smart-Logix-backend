@@ -1,11 +1,15 @@
 package com.mover.services.impl;
 
 import com.mover.entities.*;
+import com.mover.entities.orderrelated.DropLocation;
+import com.mover.entities.orderrelated.Order;
+import com.mover.entities.orderrelated.OrderDetails;
+import com.mover.entities.orderrelated.PickupLocation;
 import com.mover.exceptions.ResourceNotFoundException;
-import com.mover.payloads.DropLocationDto;
-import com.mover.payloads.OrderDetailsDto;
-import com.mover.payloads.OrderDto;
-import com.mover.payloads.PickupLocationDto;
+import com.mover.payloads.orderrelated.DropLocationDto;
+import com.mover.payloads.orderrelated.OrderDetailsDto;
+import com.mover.payloads.orderrelated.OrderDto;
+import com.mover.payloads.orderrelated.PickupLocationDto;
 import com.mover.payloads.apirequests.OrderRequest;
 import com.mover.repositories.OrderRepository;
 import com.mover.repositories.UserRepository;
@@ -71,6 +75,13 @@ public class OrderServiceImpl implements OrderService {
         List<Order> allOrders = this.orderRepo.findByUserId(userId);
         List<OrderDto> allOrderDtos = allOrders.stream().map(this::toOrderDto).toList();
         return allOrderDtos;
+    }
+
+    @Override
+    public List<OrderDto> getAllOrdersBYCity(String city, String status) {
+        List<Order> listOfOrders = this.orderRepo.findOrderByCity(city,status);
+        List<OrderDto> listOfOrderDto = listOfOrders.stream().map(this::toOrderDto).toList();
+        return listOfOrderDto;
     }
 
     @Override
