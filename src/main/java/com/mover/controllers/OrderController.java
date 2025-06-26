@@ -44,6 +44,15 @@
             return new ResponseEntity<>(orderDto,HttpStatus.OK);
         }
 
+        @GetMapping("/get-orders-by-city/{city}/{status}")
+        public ResponseEntity<List<OrderDto>> getOrdersByCity(
+                @PathVariable("city") String city,
+                @PathVariable("status") String status) {
+
+            List<OrderDto> orders = orderService.getAllOrdersByCity(city, status);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }
+
         @DeleteMapping("delete-order/{orderId}")
         public ResponseEntity<DeleteResponse> deleteUser(@PathVariable("orderId") Long orderId){
             this.orderService.deleteOrder(orderId);

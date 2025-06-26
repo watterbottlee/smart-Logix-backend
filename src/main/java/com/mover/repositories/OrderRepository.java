@@ -12,7 +12,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o WHERE o.user.userId = :userId")
     List<Order> findByUserId(@Param("userId") Long userId);
 
-    @Query("SELECT o FROM Order o where o.city= banglore && o.status == active")
-    List<Order> findOrderByCity(String city,String status);
+    //sorts order from db by city and status
+    @Query("SELECT o FROM Order o WHERE " +
+            "LOWER(o.pickupLocation.address) LIKE LOWER(CONCAT('%', :city, '%')) " +
+            "AND o.status = :status " +
+            "ORDER BY o.createdAt DESC")
+    List<Order> findOrdersByPickupCityAndStatus(@Param("city") String city, @Param("status") String status);
 
 }

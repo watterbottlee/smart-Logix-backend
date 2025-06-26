@@ -1,6 +1,7 @@
-package com.mover.entities.transporterrelated;
+package com.mover.payloads.transporterrelated;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,28 +11,25 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class TransporterAddress {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class TransporterAddressDto {
+
     private Long addressId;
 
-    @Column(nullable = false)
+    @NotNull
     private Long transporterId;
 
-    @Column(nullable = false)
+    @NotNull
     private String street;
 
-    @Column(nullable = false)
+    @NotNull
     private String city;
 
-    @Column(nullable = false)
+    @NotNull
     private String state;
 
-    @Column(nullable = false)
+    @NotNull
     private String zipCode;
 
-    @Column(nullable = false)
+    @NotNull
     private String country;
 }
-

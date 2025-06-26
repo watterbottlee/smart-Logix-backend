@@ -1,6 +1,6 @@
-package com.mover.entities.transporterrelated;
+package com.mover.payloads.transporterrelated;
 
-import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,30 +10,28 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class VehicleDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class VehicleDetailsDto {
+
     private Long vehicleId;
 
-    @Column(nullable = false)
+    @NotNull
     private Long transporterId;
 
-    @Column(nullable = false)
+    @NotNull
     //truck , pickup etc
     private String vehicleType;
 
-    @Column(nullable = false, unique = true)
+    @NotNull
     private String vehicleNumber;
 
-    @Column(nullable = false)
+    @NotNull
     private String vehicleMake;
 
-    @Column(nullable = false)
+    @NotNull
     private String vehicleModel;
 
     //self, rental
-    @Column(nullable = false)
+    @NotNull
     private String owner;
 
 }

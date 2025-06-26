@@ -5,6 +5,7 @@ import com.mover.entities.orderrelated.DropLocation;
 import com.mover.entities.orderrelated.Order;
 import com.mover.entities.orderrelated.OrderDetails;
 import com.mover.entities.orderrelated.PickupLocation;
+import com.mover.entities.transporterrelated.Transporter;
 import com.mover.exceptions.ResourceNotFoundException;
 import com.mover.payloads.orderrelated.DropLocationDto;
 import com.mover.payloads.orderrelated.OrderDetailsDto;
@@ -12,10 +13,12 @@ import com.mover.payloads.orderrelated.OrderDto;
 import com.mover.payloads.orderrelated.PickupLocationDto;
 import com.mover.payloads.apirequests.OrderRequest;
 import com.mover.repositories.OrderRepository;
+import com.mover.repositories.TransporterRepository;
 import com.mover.repositories.UserRepository;
 import com.mover.services.OrderService;
 import com.mover.services.PriceGenerator;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -38,6 +42,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private PriceGenerator priceGenerator;
+
+    @Autowired
+    private TransporterRepository transporterRepo;
 
     @Override
     public OrderDto createOrder(OrderRequest orderRequest) {
@@ -78,9 +85,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getAllOrdersBYCity(String city, String status) {
-        List<Order> listOfOrders = this.orderRepo.findOrderByCity(city,status);
-        List<OrderDto> listOfOrderDto = listOfOrders.stream().map(this::toOrderDto).toList();
+    public List<OrderDto> getAllOrdersByCity(String city, String status) {
+        // Input validation
+        if (city == null || city.trim().isEmpty()) {
+            throw new IllegalArgumentException("City cannot be null or empty");
+        }
+        if (status == null || status.trim().isEmpty()) {
+            throw new IllegalArgumentException("Status cannot be null or empty");
+        }
+
+
+        String trimmedCity = city.trim();
+        String trimmedStatus = status.trim();
+        log.info("got a city with: "+trimmedCity);
+
+        List<Order> listOfOrders = this.orderRepo.findOrdersByPickupCityAndStatus(trimmedCity, trimmedStatus);
+        log.info("found something in the db");
+
+        List<OrderDto> listOfOrderDto = listOfOrders.stream()
+                .map(this::toOrderDto)
+                .toList();
+        log.info("made a list of orders with city");
+
         return listOfOrderDto;
     }
 
@@ -104,6 +130,8 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setUpdatedAt(order.getUpdatedAt());
         orderDto.setPrice(order.getPrice());
         orderDto.setStatus(order.getStatus());
+        orderDto.setTransporterId(order.getTransporterId());
+        log.info("set transporterId to null in order->orderDto");
 
         // Map User ID (assuming User entity has getId() method)
         if (order.getUser() != null) {
@@ -137,6 +165,16 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdatedAt(orderDto.getUpdatedAt());
         order.setPrice(orderDto.getPrice());
         order.setStatus(orderDto.getStatus());
+        if(orderDto.getTransporterId()!=null){
+            Transporter transporter = transporterRepo.findById(orderDto.getTransporterId())
+                    .orElseThrow(() -> new EntityNotFoundException("transporter not found with id: " + orderDto.getTransporterId()));
+            order.setTransporterId(transporter.getTransporterId());
+            log.info("set transporterId orderDto->order");
+        }
+        if(orderDto.getTransporterId()==null){
+            order.setTransporterId(null);
+            log.info("set transporterId to null in orderDto->order");
+        }
 
         if (orderDto.getUserID() != null) {
             User user = userRepo.findById(orderDto.getUserID())
@@ -171,6 +209,8 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setUpdatedAt(orderRequest.getUpdatedAt());
         orderDto.setPrice(priceGenerator.generatePrice(orderRequest));
         orderDto.setStatus("active");
+        orderDto.setTransporterId(null);
+        log.info("set transporterId to null in request->orderDto");
 
         // Map User ID (assuming User entity has getId() method)
         if (orderRequest.getUserID() != null) {
