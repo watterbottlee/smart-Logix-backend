@@ -22,9 +22,9 @@ public class TransporterController {
         TransporterDTO savedTransporter = transporterService.registerTransporter(transporterDTO);
         return new ResponseEntity<>(savedTransporter, HttpStatus.CREATED);
     }
+
     // GET: Retrieve transporter by email
-    // GET: Retrieve transporter by email
-    @GetMapping("/email/{email}")
+    @GetMapping("/by-email/{email}")
     public ResponseEntity<TransporterDTO> getTransporterByEmail(@PathVariable String email) {
         TransporterDTO transporter = transporterService.getTransporterByEmail(email);
         return ResponseEntity.ok(transporter);
@@ -36,4 +36,17 @@ public class TransporterController {
         TransporterDTO transporter = transporterService.getTransporterById(id);
         return ResponseEntity.ok(transporter);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TransporterDTO> updateTransporter(@PathVariable Long id, @RequestBody TransporterDTO dto) {
+        TransporterDTO updated = transporterService.updateTransporter(id, dto);
+        return new ResponseEntity<>(updated, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteTransporter(@PathVariable Long id) {
+        transporterService.deleteTransporter(id);
+        return new ResponseEntity<>("Transporter deleted successfully.", HttpStatus.OK);
+    }
+
 }

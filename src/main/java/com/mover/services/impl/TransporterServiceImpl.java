@@ -54,6 +54,33 @@ public class TransporterServiceImpl implements TransporterService {
         return modelMapper.map(transporter, TransporterDTO.class);
     }
 
+
+
+    @Override
+    public TransporterDTO updateTransporter(Long id, TransporterDTO dto) {
+        Transporter existing = transporterRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transporter not found with ID: " + id));
+
+        // Only update fields you want to allow updating
+        existing.setName(dto.getName());
+        existing.setEmail(dto.getEmail());
+        existing.setLicenseNumber(dto.getLicenseNumber());
+        existing.setPhone(dto.getPhone());
+        existing.setVehicleDetails(modelMapper.map(dto.getVehicleDetails(), VehicleDetails.class));
+        existing.setTransporterAddress(modelMapper.map(dto.getAddress(), TransporterAddress.class));
+
+        Transporter updated = transporterRepository.save(existing);
+        return modelMapper.map(updated, TransporterDTO.class);
+    }
+
+    @Override
+    public void deleteTransporter(Long id) {
+        Transporter transporter = transporterRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Transporter not found with ID: " + id));
+
+        transporterRepository.delete(transporter);
+    }
+
     private VehicleDetails toVehicleEntity(VehicleDetailsDTO dto) {
         return modelMapper.map(dto, VehicleDetails.class);
     }
