@@ -1,7 +1,7 @@
 package com.mover.repositories;
 
 
-import com.mover.entities.Transporter;
+import com.mover.entities.transporterrelated.Transporter;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

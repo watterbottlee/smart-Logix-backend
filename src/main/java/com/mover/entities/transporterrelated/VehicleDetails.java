@@ -1,4 +1,4 @@
-package com.mover.entities;
+package com.mover.entities.transporterrelated;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,28 +6,24 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "addresses")
+@Table(name = "vehicle_details")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Address {
+public class VehicleDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String street;
+    private VehicleType vehicleType;
+
+    @Column(nullable = false, unique = true)
+    private String vehicleNumber;
 
     @Column(nullable = false)
-    private String city;
+    private Integer capacity;
 
-    @Column(nullable = false)
-    private String state;
-
-    @Column(nullable = false)
-    private String zipCode;
-
-    @Column(nullable = false)
-    private String country;
 }

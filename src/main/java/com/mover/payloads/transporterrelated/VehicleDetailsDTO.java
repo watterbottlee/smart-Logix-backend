@@ -1,7 +1,6 @@
-package com.mover.payloads;
+package com.mover.payloads.transporterrelated;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.mover.entities.VehicleType;
+import com.mover.entities.transporterrelated.VehicleType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

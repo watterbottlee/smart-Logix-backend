@@ -1,4 +1,4 @@
-package com.mover.payloads;
+package com.mover.payloads.transporterrelated;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddressDTO {
+public class TransporterAddressDTO {
     @NotEmpty (message = "street should not be empty")
     private String street;
     @NotEmpty (message = "city should not be empty")

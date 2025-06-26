@@ -1,4 +1,4 @@
-package com.mover.entities;
+package com.mover.entities.transporterrelated;
 public enum VehicleType {
     TRUCK,
     VAN,

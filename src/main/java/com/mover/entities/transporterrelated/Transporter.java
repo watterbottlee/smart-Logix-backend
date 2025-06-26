@@ -1,6 +1,6 @@
-package com.mover.entities;
+package com.mover.entities.transporterrelated;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mover.entities.orderrelated.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +21,8 @@ public class Transporter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "transporter_id")
+    private Long transporterId;
 
     @Column(nullable = false)
     private String name;
@@ -39,12 +40,18 @@ public class Transporter {
     private String licenseNumber;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "vehicle_details_id")
+    @JoinColumn(
+            name = "vehicle_details_id",
+            foreignKey = @ForeignKey(name = "fk_transporter_vehicle_details")
+    )
     private VehicleDetails vehicleDetails;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
-    private Address address;
+    @JoinColumn(
+            name = "address_id",
+            foreignKey = @ForeignKey(name = "fk_transporter_address")
+    )
+    private TransporterAddress transporterAddress;
 
     @OneToMany(mappedBy = "transporter", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
@@ -59,4 +66,6 @@ public class Transporter {
 
     @Column(name = "is_active")
     private Boolean isActive = true;
+
+
 }

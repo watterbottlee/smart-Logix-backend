@@ -1,4 +1,4 @@
-package com.mover.payloads;
+package com.mover.payloads.transporterrelated;
 
 
 import lombok.AllArgsConstructor;
@@ -27,5 +27,5 @@ public class TransporterDTO {
     private VehicleDetailsDTO vehicleDetails;
     @Valid
     @NotNull(message = "address should not be null")
-    private AddressDTO address;
+    private TransporterAddressDTO address;
 }

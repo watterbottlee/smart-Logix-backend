@@ -1,11 +1,11 @@
 package com.mover.services.impl;
 
-import com.mover.entities.Address;
-import com.mover.entities.Transporter;
-import com.mover.entities.VehicleDetails;
-import com.mover.payloads.AddressDTO;
-import com.mover.payloads.TransporterDTO;
-import com.mover.payloads.VehicleDetailsDTO;
+import com.mover.entities.transporterrelated.TransporterAddress;
+import com.mover.entities.transporterrelated.Transporter;
+import com.mover.entities.transporterrelated.VehicleDetails;
+import com.mover.payloads.transporterrelated.TransporterAddressDTO;
+import com.mover.payloads.transporterrelated.TransporterDTO;
+import com.mover.payloads.transporterrelated.VehicleDetailsDTO;
 import com.mover.repositories.TransporterRepository;
 import com.mover.services.TransporterService;
 import org.modelmapper.ModelMapper;
@@ -23,18 +23,20 @@ public class TransporterServiceImpl implements TransporterService {
     @Autowired
     private ModelMapper modelMapper;
     @Override
-    public Transporter registerTransporter(TransporterDTO dto) {
-
+    public TransporterDTO registerTransporter(TransporterDTO dto) {
         if (transporterRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email already exists!");
         }
         if (transporterRepository.existsByLicenseNumber(dto.getLicenseNumber())) {
             throw new RuntimeException("License number already exists!");
         }
-        // Convert DTO to entity
-        Transporter transporter = this.modelMapper.map(dto, Transporter.class);
-        return transporterRepository.save(transporter);
+
+        Transporter transporter = modelMapper.map(dto, Transporter.class);
+        Transporter saved = transporterRepository.save(transporter);
+
+        return modelMapper.map(saved, TransporterDTO.class);
     }
+
     @Override
     public TransporterDTO getTransporterByEmail(String email) {
         Transporter transporter = transporterRepository.findByEmail(email)
@@ -56,8 +58,8 @@ public class TransporterServiceImpl implements TransporterService {
         return modelMapper.map(dto, VehicleDetails.class);
     }
 
-    private Address toAddressEntity(AddressDTO dto) {
-        return modelMapper.map(dto, Address.class);
+    private TransporterAddress toAddressEntity(TransporterAddressDTO dto) {
+        return modelMapper.map(dto, TransporterAddress.class);
     }
 
 
