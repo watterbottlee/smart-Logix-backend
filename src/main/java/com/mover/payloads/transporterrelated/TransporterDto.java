@@ -1,6 +1,7 @@
-package com.mover.entities.transporterrelated;
+package com.mover.payloads.transporterrelated;
 
-import jakarta.persistence.*;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,26 +13,24 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "transporters")
-public class Transporter {
+public class TransporterDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Nullable
     private Long transporterId;
 
-    @Column(nullable = false)
+    @NotNull
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @NotNull
     private String email;
 
-    @Column(nullable = false)
+    @NotNull
     private String password;
 
-    @Column(nullable = false)
+    @NotNull
     private String phone;
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
 }

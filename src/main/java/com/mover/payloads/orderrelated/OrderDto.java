@@ -1,5 +1,6 @@
 package com.mover.payloads.orderrelated;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -22,8 +23,10 @@ public class OrderDto {
     @NotNull
     private Long userID;
 
-    @NotNull
-    @Valid
+    @Nullable
+    private Long transporterId;
+
+    @NotNull @Valid
     private PickupLocationDto pickupLocation;
 
     @NotNull

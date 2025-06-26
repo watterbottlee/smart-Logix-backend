@@ -11,7 +11,7 @@ public interface OrderService {
     OrderDto updateOrder(Long orderId, OrderDto orderDto);
     OrderDto getOrderById(Long orderId);
     List<OrderDto> getAllOrders(Long userId);
-    List<OrderDto> getAllOrdersBYCity(String city, String status);
+    List<OrderDto> getAllOrdersByCity(String city, String status);
     void deleteOrder(Long orderId);
 
 }

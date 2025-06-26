@@ -1,6 +1,5 @@
 package com.mover.controllers;
 
-import com.mover.entities.User;
 import com.mover.exceptions.DeleteResponse;
 import com.mover.payloads.UserDto;
 import com.mover.services.UserService;
