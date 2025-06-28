@@ -1,6 +1,6 @@
 # Smart Logix Backend API Documentation
 
-**Base URL:** All endpoints are relative to your deployment domain.  
+**Base URL:** All endpoints are relative to  deployment domain. it can be your localhost or deployed server 
 **Format:** All requests and responses use JSON.
 
 ---
