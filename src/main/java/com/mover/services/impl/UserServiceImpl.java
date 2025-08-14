@@ -7,6 +7,7 @@ import com.mover.repositories.UserRepository;
 import com.mover.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,9 @@ import java.util.stream.Stream;
 
 @Service
 public class UserServiceImpl implements UserService {
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepo;
@@ -26,9 +30,11 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto createUser(UserDto userDto) {
         User user = this.DtoToUser(userDto);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = this.userRepo.save(user);
         return this.userToDto(savedUser);
     }
+
 
     @Override
     public UserDto updateUser(Long userId, UserDto userDto) {
@@ -36,10 +42,11 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(()->new ResourceNotFoundException("user","user_id",String.valueOf(userId)));
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         User updatedUser = this.userRepo.save(user);
         return this.userToDto(updatedUser);
     }
+
 
     @Override
     public UserDto getUserById(Long userId) {
