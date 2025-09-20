@@ -5,7 +5,6 @@ import com.mover.entities.orderrelated.DropLocation;
 import com.mover.entities.orderrelated.Order;
 import com.mover.entities.orderrelated.OrderDetails;
 import com.mover.entities.orderrelated.PickupLocation;
-import com.mover.entities.transporterrelated.Transporter;
 import com.mover.exceptions.ResourceNotFoundException;
 import com.mover.payloads.orderrelated.DropLocationDto;
 import com.mover.payloads.orderrelated.OrderDetailsDto;
@@ -13,7 +12,6 @@ import com.mover.payloads.orderrelated.OrderDto;
 import com.mover.payloads.orderrelated.PickupLocationDto;
 import com.mover.payloads.apirequests.OrderRequest;
 import com.mover.repositories.OrderRepository;
-import com.mover.repositories.TransporterRepository;
 import com.mover.repositories.UserRepository;
 import com.mover.services.OrderService;
 import com.mover.services.PriceGenerator;
@@ -42,9 +40,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private PriceGenerator priceGenerator;
-
-    @Autowired
-    private TransporterRepository transporterRepo;
 
     @Override
     public OrderDto createOrder(OrderRequest orderRequest) {
@@ -166,9 +161,9 @@ public class OrderServiceImpl implements OrderService {
         order.setPrice(orderDto.getPrice());
         order.setStatus(orderDto.getStatus());
         if(orderDto.getTransporterId()!=null){
-            Transporter transporter = transporterRepo.findById(orderDto.getTransporterId())
+            User transporter = userRepo.findById(orderDto.getTransporterId())
                     .orElseThrow(() -> new EntityNotFoundException("transporter not found with id: " + orderDto.getTransporterId()));
-            order.setTransporterId(transporter.getTransporterId());
+            order.setTransporterId(transporter.getUserId());
             log.info("set transporterId orderDto->order");
         }
         if(orderDto.getTransporterId()==null){

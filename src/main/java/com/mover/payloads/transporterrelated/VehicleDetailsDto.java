@@ -15,7 +15,7 @@ public class VehicleDetailsDto {
     private Long vehicleId;
 
     @NotNull
-    private Long transporterId;
+    private Long userId;
 
     @NotNull
     //truck , pickup etc

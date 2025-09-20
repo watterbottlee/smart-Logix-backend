@@ -16,7 +16,7 @@ public class TransporterAddressDto {
     private Long addressId;
 
     @NotNull
-    private Long transporterId;
+    private Long userId;
 
     @NotNull
     private String street;

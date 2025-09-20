@@ -17,7 +17,7 @@ public class VehicleDetails {
     private Long vehicleId;
 
     @Column(nullable = false)
-    private Long transporterId;
+    private Long userId;
 
     @Column(nullable = false)
     //truck , pickup etc

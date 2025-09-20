@@ -1,8 +1,6 @@
 package com.mover.entities.orderrelated;
 
 import com.mover.entities.User;
-import com.mover.entities.transporterrelated.Transporter;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

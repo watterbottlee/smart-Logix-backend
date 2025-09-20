@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -22,4 +24,10 @@ public class UserDto {
     @NotEmpty
     @Size(min=8,max = 24)
     private String password;
+
+    private String phone;
+    private String role;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

@@ -6,8 +6,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,9 +33,20 @@ public class User implements UserDetails {
 
     private String password;
 
+    private String phone;
+
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+        if (role != null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        }
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
 	}
 
 	@Override

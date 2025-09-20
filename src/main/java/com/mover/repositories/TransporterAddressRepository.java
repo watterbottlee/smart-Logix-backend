@@ -4,5 +4,5 @@
     import org.springframework.data.jpa.repository.JpaRepository;
 
     public interface TransporterAddressRepository extends JpaRepository<TransporterAddress, Long> {
-        TransporterAddress findByTransporterId(Long transporterId);
+        TransporterAddress findByUserId(Long userId);
     }
