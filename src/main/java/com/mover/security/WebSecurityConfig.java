@@ -46,6 +46,9 @@ public class WebSecurityConfig {
                         // Vehicle endpoints
                         .requestMatchers("/users/*/vehicle/**", "/users/vehicle/**").hasAnyRole("TRANSPORTER", "ADMIN")
 
+                        //order requests
+                        .requestMatchers("/order/update-order/").hasAnyRole("USER","TRANSPORTER", "ADMIN")
+
                         // All other requests require authentication
                         .anyRequest().authenticated()
                 )

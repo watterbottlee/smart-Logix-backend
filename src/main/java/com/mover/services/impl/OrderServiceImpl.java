@@ -125,8 +125,9 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setUpdatedAt(order.getUpdatedAt());
         orderDto.setPrice(order.getPrice());
         orderDto.setStatus(order.getStatus());
-        orderDto.setTransporterId(order.getTransporterId());
-        log.info("set transporterId to null in order->orderDto");
+        if (order.getTransporter() != null) {
+            orderDto.setTransporterId(order.getTransporter().getUserId());
+        }
 
         // Map User ID (assuming User entity has getId() method)
         if (order.getUser() != null) {
@@ -160,15 +161,14 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdatedAt(orderDto.getUpdatedAt());
         order.setPrice(orderDto.getPrice());
         order.setStatus(orderDto.getStatus());
-        if(orderDto.getTransporterId()!=null){
+        if (orderDto.getTransporterId() != null) {
             User transporter = userRepo.findById(orderDto.getTransporterId())
-                    .orElseThrow(() -> new EntityNotFoundException("transporter not found with id: " + orderDto.getTransporterId()));
-            order.setTransporterId(transporter.getUserId());
-            log.info("set transporterId orderDto->order");
-        }
-        if(orderDto.getTransporterId()==null){
-            order.setTransporterId(null);
-            log.info("set transporterId to null in orderDto->order");
+                    .orElseThrow(() -> new EntityNotFoundException("Transporter not found with id: " + orderDto.getTransporterId()));
+            order.setTransporter(transporter);  // Set the User object, not just the ID
+            log.info("set transporter orderDto->order");
+        } else {
+            order.setTransporter(null);
+            log.info("set transporter to null in orderDto->order");
         }
 
         if (orderDto.getUserID() != null) {
