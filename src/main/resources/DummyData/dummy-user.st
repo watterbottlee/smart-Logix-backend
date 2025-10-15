@@ -1,0 +1,13 @@
+{
+    "name":"adminrole",
+    "email":"adminrole@gmail.com",
+    "password":"adminrole",
+    "role":"ADMIN"
+}
+{
+    "name":"transporter",
+    "email":"transporter@gmail.com",
+    "password":"transporterrole",
+    "role":"TRANSPORTER",
+    "phone":4357879090
+}
