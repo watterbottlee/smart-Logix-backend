@@ -1,5 +1,6 @@
 package com.mover.entities;
 
+import com.mover.entities.orderrelated.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,16 +42,20 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
+    // Add relationship to orders with cascade delete
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
         if (role != null) {
             return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
         }
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-	}
+    }
 
-	@Override
-	public String getUsername() {
-		return this.email;
-	}
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 }

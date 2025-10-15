@@ -1,5 +1,6 @@
 package com.mover.services.impl;
 
+import com.mover.entities.RoleEnum;
 import com.mover.entities.User;
 import com.mover.entities.transporterrelated.TransporterAddress;
 import com.mover.entities.transporterrelated.VehicleDetails;
@@ -24,9 +25,9 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class UserServiceImpl implements UserService {
-	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepo;
@@ -53,10 +54,18 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long userId, UserDto userDto) {
         User user = this.userRepo.findById(userId)
                 .orElseThrow(()->new ResourceNotFoundException("user","user_id",String.valueOf(userId)));
+
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+
+        // Only update password if provided and not empty
+        if (userDto.getPassword() != null && !userDto.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+
+        user.setPhone(userDto.getPhone());
         user.setUpdatedAt(LocalDateTime.now());
+
         User updatedUser = this.userRepo.save(user);
         return this.userToDto(updatedUser);
     }
@@ -78,15 +87,43 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId){
         User user = this.userRepo.findById(userId)
-                .orElseThrow(()->new ResourceNotFoundException("user","email_id",String.valueOf(userId)));
-        this.userRepo.delete(user);
+                .orElseThrow(()->new ResourceNotFoundException("user","user_id",String.valueOf(userId)));
+
+        log.info("Deleting user with ID: {} and email: {}", userId, user.getEmail());
+
+        try {
+            // Delete related address records first (if they exist)
+            TransporterAddress address = transporterAddressRepository.findByUserId(userId);
+            if (address != null) {
+                log.info("Deleting address for user: {}", userId);
+                transporterAddressRepository.delete(address);
+            }
+
+            // Delete related vehicle records
+            List<VehicleDetails> vehicles = vehicleDetailsRepository.findAll()
+                    .stream()
+                    .filter(vd -> vd.getUserId().equals(userId))
+                    .toList();
+
+            if (!vehicles.isEmpty()) {
+                log.info("Deleting {} vehicle(s) for user: {}", vehicles.size(), userId);
+                vehicleDetailsRepository.deleteAll(vehicles);
+            }
+
+            // Finally delete the user
+            this.userRepo.delete(user);
+            log.info("Successfully deleted user with ID: {}", userId);
+
+        } catch (Exception e) {
+            log.error("Error deleting user with ID: {}", userId, e);
+            throw new RuntimeException("Failed to delete user: " + e.getMessage());
+        }
     }
 
     @Override
     public List<UserDto> getAllUsers(){
         List<User> allUsers = this.userRepo.findAll();
-        List<UserDto> allUserDtos = allUsers.stream().map(this::userToDto).toList();
-        return allUserDtos;
+        return allUsers.stream().map(this::userToDto).toList();
     }
 
     // TransporterAddress methods
@@ -124,18 +161,22 @@ public class UserServiceImpl implements UserService {
     public TransporterAddressDto getAddressByTransporterEmail(String emailId) {
         User transporter = userRepo.findByEmail(emailId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transporter", "email", emailId));
-        Long userId= transporter.getUserId();
-        log.info("got the transporter with"+userId);
+        Long userId = transporter.getUserId();
+        log.info("Got the transporter with userId: {}", userId);
+
         TransporterAddress address = transporterAddressRepository.findByUserId(userId);
-        log.info("found the address with transporter id");
-        TransporterAddressDto addressDto = this.toDto(address);
-        return addressDto;
+        if (address == null) {
+            throw new ResourceNotFoundException("TransporterAddress", "userId", userId.toString());
+        }
+
+        log.info("Found the address with transporter id: {}", userId);
+        return this.toDto(address);
     }
 
     // VehicleDetails methods
     public VehicleDetailsDto addVehicleDetail(Long userId, VehicleDetailsDto vehicleDetailsDto) {
         User transporter = userRepo.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Transporter", "transporterId", userRepo.toString()));
+                .orElseThrow(() -> new ResourceNotFoundException("Transporter", "transporterId", userId.toString()));
 
         VehicleDetails vehicleDetails = this.toEntity(vehicleDetailsDto);
         vehicleDetails.setUserId(userId);
@@ -151,7 +192,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("VehicleDetails", "vehicleId", vehicleDetailsDto.getVehicleId().toString()));
 
         if (!existing.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("user ID mismatch");
+            throw new IllegalArgumentException("User ID mismatch - vehicle does not belong to this user");
         }
 
         existing.setVehicleType(vehicleDetailsDto.getVehicleType());
@@ -169,10 +210,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("VehicleDetails", "vehicleId", vehicleId.toString()));
         return this.toDto(vehicleDetails);
     }
-    public VehicleDetailsDto getVehicleDetailByUserEmail(Long userEmail) {
 
-        User user = userRepo.findById(userEmail)
-                .orElseThrow(() -> new ResourceNotFoundException("Transporter", "transporterId", userEmail.toString()));
+    public VehicleDetailsDto getVehicleDetailByUserEmail(Long userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Transporter", "transporterId", userId.toString()));
 
         Optional<VehicleDetails> vehicleDetailsOpt = vehicleDetailsRepository.findAll()
                 .stream()
@@ -185,27 +226,67 @@ public class UserServiceImpl implements UserService {
         return this.toDto(vehicleDetailsOpt.get());
     }
 
+    // Helper methods for TransporterAddress
     private TransporterAddressDto toDto(TransporterAddress address) {
         if (address == null) return null;
         return modelMapper.map(address, TransporterAddressDto.class);
     }
+
     private TransporterAddress toEntity(TransporterAddressDto dto) {
         if (dto == null) return null;
         return modelMapper.map(dto, TransporterAddress.class);
     }
+
+    // Helper methods for VehicleDetails
     private VehicleDetailsDto toDto(VehicleDetails vehicleDetails) {
         if (vehicleDetails == null) return null;
         return modelMapper.map(vehicleDetails, VehicleDetailsDto.class);
     }
+
     private VehicleDetails toEntity(VehicleDetailsDto dto) {
         if (dto == null) return null;
         return modelMapper.map(dto, VehicleDetails.class);
     }
 
-    public UserDto userToDto(User user){
-        return this.modelMapper.map(user, UserDto.class);
+    // Helper methods for User
+    public UserDto userToDto(User user) {
+        if (user == null) return null;
+
+        UserDto dto = new UserDto();
+        dto.setUserId(user.getUserId());
+        dto.setName(user.getName());
+        dto.setEmail(user.getEmail());
+        dto.setPassword(user.getPassword());
+        dto.setPhone(user.getPhone());
+        dto.setRole(user.getRole() != null ? user.getRole().name() : null);
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
+
+        return dto;
     }
-    public User DtoToUser(UserDto userDto){
-        return this.modelMapper.map(userDto,User.class);
+
+    public User DtoToUser(UserDto userDto) {
+        if (userDto == null) return null;
+
+        User user = new User();
+        user.setUserId(userDto.getUserId());
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setPhone(userDto.getPhone());
+
+        // Convert role string to enum
+        if (userDto.getRole() != null && !userDto.getRole().isEmpty()) {
+            try {
+                user.setRole(RoleEnum.valueOf(userDto.getRole().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                log.warn("Invalid role: {}, defaulting to USER", userDto.getRole());
+                user.setRole(RoleEnum.USER);
+            }
+        } else {
+            user.setRole(RoleEnum.USER); // Default role
+        }
+
+        return user;
     }
 }
