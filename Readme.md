@@ -13,6 +13,93 @@ swagger api documentation sneak-peak
 
 https://github.com/user-attachments/assets/2a4bf650-8a40-414f-95dd-1accb2c543c2
 
+##📁 Project Structure
+```
+smart-Logix-backend/
+├── pom.xml
+├── db-erdiagram.pdf
+├── db-erdiagram.svg
+└── src/
+    └── main/
+        ├── java/
+        │   └── com/
+        │       └── mover/
+        │           ├── MoverApplication.java          # Main Spring Boot Application
+        │           ├── config/
+        │           │   └── ModelMapperConfig.java
+        │           ├── controllers/                   # REST API Controllers
+        │           │   ├── AuthController.java
+        │           │   ├── OrderController.java
+        │           │   └── UserController.java
+        │           ├── entities/                      # JPA Entities
+        │           │   ├── User.java
+        │           │   ├── RoleEnum.java
+        │           │   ├── orderrelated/
+        │           │   │   ├── Order.java
+        │           │   │   ├── OrderDetails.java
+        │           │   │   ├── Dimensions.java
+        │           │   │   ├── PickupLocation.java
+        │           │   │   └── DropLocation.java
+        │           │   └── transporterrelated/
+        │           │       ├── TransporterAddress.java
+        │           │       └── VehicleDetails.java
+        │           ├── repositories/                  # JPA Repositories
+        │           │   ├── UserRepository.java
+        │           │   ├── OrderRepository.java
+        │           │   ├── TransporterAddressRepository.java
+        │           │   └── VehicleDetailsRepository.java
+        │           ├── services/                      # Business Logic Layer
+        │           │   ├── UserService.java
+        │           │   ├── OrderService.java
+        │           │   ├── PriceGenerator.java
+        │           │   └── impl/
+        │           │       ├── UserServiceImpl.java
+        │           │       ├── OrderServiceImpl.java
+        │           │       └── PriceGeneratorImpl.java
+        │           ├── payloads/                      # DTOs & Request/Response Objects
+        │           │   ├── ApiResponse.java
+        │           │   ├── LoginRequestDto.java
+        │           │   ├── LoginResponseDto.java
+        │           │   ├── UserDto.java
+        │           │   ├── apirequests/
+        │           │   ├── orderrelated/
+        │           │   └── transporterrelated/
+        │           ├── security/                      # JWT & Security Configuration
+        │           │   ├── WebSecurityConfig.java
+        │           │   ├── JwtAuthFilter.java
+        │           │   ├── AuthService.java
+        │           │   ├── AuthUtil.java
+        │           │   └── CustomUserDetailsService.java
+        │           └── exceptions/                    # Global Exception Handling
+        │               ├── GlobalExceptionHandler.java
+        │               ├── ResourceNotFoundException.java
+        │               └── DeleteResponse.java
+        └── resources/
+            ├── application.properties                # Application Configuration
+            ├── DummyData/
+            │   └── dummy-user.st
+            └── templates/                            # Thymeleaf Templates
+                ├── login.html
+                ├── logout.html
+                ├── error.html
+                └── Mover.html
+
+```
+This structure follows the standard Spring Boot layered architecture with clear separation of concerns:
+
+    Controllers: Handle HTTP requests and responses
+
+    Services: Business logic implementation
+
+    Repositories: Data access layer
+
+    Entities: JPA database models
+
+    Payloads: DTOs for API communication
+
+    Security: JWT authentication and authorization
+
+    Exceptions: Centralized error handling
 
 ## Table of Contents
 
