@@ -1,13 +1,16 @@
 package com.mover.entities;
 
+import com.mover.entities.orderrelated.Order;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -31,13 +34,28 @@ public class User implements UserDetails {
 
     private String password;
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
-	}
+    private String phone;
 
-	@Override
-	public String getUsername() {
-		return this.email;
-	}
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
+
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    // Add relationship to orders with cascade delete
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (role != null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        }
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
 }

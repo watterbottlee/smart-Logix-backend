@@ -1,5 +1,7 @@
 package com.mover.payloads.transporterrelated;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -15,8 +17,9 @@ public class TransporterAddressDto {
 
     private Long addressId;
 
-    @NotNull
-    private Long transporterId;
+    @JsonProperty("userId")  // Primary name
+    @JsonAlias("transporterId")
+    private Long userId;
 
     @NotNull
     private String street;

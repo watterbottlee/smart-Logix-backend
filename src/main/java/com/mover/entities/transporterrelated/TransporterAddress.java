@@ -17,7 +17,7 @@ public class TransporterAddress {
     private Long addressId;
 
     @Column(nullable = false)
-    private Long transporterId;
+    private Long userId;
 
     @Column(nullable = false)
     private String street;

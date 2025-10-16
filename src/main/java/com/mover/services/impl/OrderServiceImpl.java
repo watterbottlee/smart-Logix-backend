@@ -5,7 +5,6 @@ import com.mover.entities.orderrelated.DropLocation;
 import com.mover.entities.orderrelated.Order;
 import com.mover.entities.orderrelated.OrderDetails;
 import com.mover.entities.orderrelated.PickupLocation;
-import com.mover.entities.transporterrelated.Transporter;
 import com.mover.exceptions.ResourceNotFoundException;
 import com.mover.payloads.orderrelated.DropLocationDto;
 import com.mover.payloads.orderrelated.OrderDetailsDto;
@@ -13,7 +12,6 @@ import com.mover.payloads.orderrelated.OrderDto;
 import com.mover.payloads.orderrelated.PickupLocationDto;
 import com.mover.payloads.apirequests.OrderRequest;
 import com.mover.repositories.OrderRepository;
-import com.mover.repositories.TransporterRepository;
 import com.mover.repositories.UserRepository;
 import com.mover.services.OrderService;
 import com.mover.services.PriceGenerator;
@@ -42,9 +40,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private PriceGenerator priceGenerator;
-
-    @Autowired
-    private TransporterRepository transporterRepo;
 
     @Override
     public OrderDto createOrder(OrderRequest orderRequest) {
@@ -130,8 +125,9 @@ public class OrderServiceImpl implements OrderService {
         orderDto.setUpdatedAt(order.getUpdatedAt());
         orderDto.setPrice(order.getPrice());
         orderDto.setStatus(order.getStatus());
-        orderDto.setTransporterId(order.getTransporterId());
-        log.info("set transporterId to null in order->orderDto");
+        if (order.getTransporter() != null) {
+            orderDto.setTransporterId(order.getTransporter().getUserId());
+        }
 
         // Map User ID (assuming User entity has getId() method)
         if (order.getUser() != null) {
@@ -165,15 +161,14 @@ public class OrderServiceImpl implements OrderService {
         order.setUpdatedAt(orderDto.getUpdatedAt());
         order.setPrice(orderDto.getPrice());
         order.setStatus(orderDto.getStatus());
-        if(orderDto.getTransporterId()!=null){
-            Transporter transporter = transporterRepo.findById(orderDto.getTransporterId())
-                    .orElseThrow(() -> new EntityNotFoundException("transporter not found with id: " + orderDto.getTransporterId()));
-            order.setTransporterId(transporter.getTransporterId());
-            log.info("set transporterId orderDto->order");
-        }
-        if(orderDto.getTransporterId()==null){
-            order.setTransporterId(null);
-            log.info("set transporterId to null in orderDto->order");
+        if (orderDto.getTransporterId() != null) {
+            User transporter = userRepo.findById(orderDto.getTransporterId())
+                    .orElseThrow(() -> new EntityNotFoundException("Transporter not found with id: " + orderDto.getTransporterId()));
+            order.setTransporter(transporter);  // Set the User object, not just the ID
+            log.info("set transporter orderDto->order");
+        } else {
+            order.setTransporter(null);
+            log.info("set transporter to null in orderDto->order");
         }
 
         if (orderDto.getUserID() != null) {

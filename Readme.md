@@ -1,745 +1,413 @@
-# Mover API Documentation
+# Transport Booking Platform API
 
-A comprehensive REST API for a logistics and moving service platform that manages users, transporters, orders, and related operations.
+A comprehensive logistics and shipment transport booking platform backend built with Spring Boot. Connects users who need shipment services with transporters who provide delivery services.
 
-## Base URL
+## Overview
+
+RESTful API service that facilitates logistics operations between users and transporters. Provides order management, real-time tracking, location services, and authentication.
+
+**Base URL**: `https://api.transportbooking.com/api/v1`
+
+## Quick Start
+
+### Authentication
+All protected endpoints require JWT token:
 ```
-http://localhost:5631
+Authorization: Bearer <jwt_token>
 ```
 
-## Authentication
-*Authentication details to be added based on your implementation*
+### Register User
+```http
+POST /auth/users/register
+Content-Type: application/json
 
----
-
-## 📋 Table of Contents
-- [User Management](#user-management)
-- [Transporter Management](#transporter-management)
-- [Order Management](#order-management)
-- [Data Models](#data-models)
-- [Error Responses](#error-responses)
-
----
-
-## 👤 User Management
-
-### Create User
-**POST** `/users/create`
-
-Creates a new user account.
-
-**Request Body:**
-```json
 {
   "name": "John Doe",
   "email": "john.doe@example.com",
-  "password": "securePassword123"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-  "userId": 1,
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "password": "securePassword123"
-}
-```
-
-### Update User
-**PUT** `/users/update-user/{userId}`
-
-Updates an existing user's information.
-
-**Path Parameters:**
-- `userId` (Long) - User ID
-
-**Request Body:**
-```json
-{
-  "name": "John Smith",
-  "email": "john.smith@example.com",
-  "password": "newSecurePassword123"
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-  "userId": 1,
-  "name": "John Smith",
-  "email": "john.smith@example.com",
-  "password": "newSecurePassword123"
-}
-```
-
-### Get All Users
-**GET** `/users/getallusers`
-
-Retrieves all users in the system.
-
-**Response:** `200 OK`
-```json
-[
-  {
-    "userId": 1,
-    "name": "John Doe",
-    "email": "john.doe@example.com",
-    "password": "securePassword123"
+  "password": "securePassword123",
+  "phone": "+1234567890",
+  "address": {
+    "street": "123 Main Street",
+    "city": "New York",
+    "state": "NY",
+    "zipCode": "10001",
+    "country": "USA"
   }
-]
+}
 ```
 
-### Get User by ID
-**GET** `/users/getuserbyid/{id}`
+### Login
+```http
+POST /auth/login
+Content-Type: application/json
 
-Retrieves a specific user by their ID.
-
-**Path Parameters:**
-- `id` (Long) - User ID
-
-**Response:** `200 OK`
-```json
 {
-  "userId": 1,
-  "name": "John Doe",
   "email": "john.doe@example.com",
   "password": "securePassword123"
 }
 ```
 
-### Get User by Email
-**GET** `/users/getuserbyemail/{emailId}`
+## User APIs
 
-Retrieves a user by their email address.
+### Create Shipment Order
+```http
+POST /users/orders
+Authorization: Bearer <token>
+Content-Type: application/json
 
-**Path Parameters:**
-- `emailId` (String) - User email
-
-**Response:** `200 OK`
-```json
 {
-  "userId": 1,
-  "name": "John Doe",
-  "email": "john.doe@example.com",
-  "password": "securePassword123"
-}
-```
-
-### Delete User
-**DELETE** `/users/delete-user/{userId}`
-
-Deletes a user account.
-
-**Path Parameters:**
-- `userId` (Long) - User ID
-
-**Response:** `200 OK`
-```json
-{
-  "message": "user deleted successfully",
-  "status": true
-}
-```
-
----
-
-## 🚛 Transporter Management
-
-### Register Transporter
-**POST** `/transporters/register`
-
-Registers a new transporter.
-
-**Request Body:**
-```json
-  {
-  "name":"ronaldo",
-  "email":"ronaldo@gamil.com",
-  "password":"fijiguqef",
-  "phone":"12345678",
-  "createdAt":"2025-06-26T11:26:00.000",
-  "updatedAt":"2025-06-26T11:26:00.000"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-  "transporterId": 5,
-  "name": "ronaldo",
-  "email": "ronaldo@gamil.com",
-  "password": "fijiguqef",
-  "phone": "12345678",
-  "createdAt": "2025-06-26T22:01:42.463610318",
-  "updatedAt": "2025-06-26T22:01:42.463634142"
-}
-```
-
-### Update Transporter
-**PUT** `/transporters/update-transporter/{transporterId}`
-
-Updates transporter information.
-
-**Path Parameters:**
-- `transporterId` (Long) - Transporter ID
-
-**Request Body:**
-```json
-{
-  "transporterId": 1,
-  "name": "narendra modi",
-  "email": "kaniskaranjanbarman@gamil.com",
-  "password": "fijiguqef",
-  "phone": "12345678",
-  "createdAt": "2025-06-26T11:27:20.918046006",
-  "updatedAt": "2025-06-26T11:27:20.918102562"
-}
-```
-
-**Response:** `200 OK`
-```json
-{
-  "transporterId": 1,
-  "name": "narendra modi",
-  "email": "kaniskaranjanbarman@gamil.com",
-  "password": "fijiguqef",
-  "phone": "12345678",
-  "createdAt": "2025-06-26T11:27:20.918046",
-  "updatedAt": "2025-06-26T22:02:33.839100412"
-}
-```
-
-### Get Transporter by ID
-**GET** `/transporters/gettransporterbyid/{id}`
-
-Retrieves transporter information by ID.
-
-**Path Parameters:**
-- `id` (Long) - Transporter ID
-
-**Response:** `200 OK`
-
-```json
-{
-  "transporterId": 1,
-  "name": "narendra modi",
-  "email": "kaniskaranjanbarman@gamil.com",
-  "password": "fijiguqef",
-  "phone": "12345678",
-  "createdAt": "2025-06-26T11:27:20.918046",
-  "updatedAt": "2025-06-26T22:02:33.8391"
-}
-```
-
-### Get Transporter by Email
-**GET** `/transporters/gettransporterbyemail/{emailId}`
-
-Retrieves transporter information by email.
-
-**Path Parameters:**
-- `emailId` (String) - Transporter email
-
-**Response:** `200 OK`
-**Response:** `200 OK`
-
-```json
-{
-  "transporterId": 1,
-  "name": "narendra modi",
-  "email": "kaniskaranjanbarman@gamil.com",
-  "password": "fijiguqef",
-  "phone": "12345678",
-  "createdAt": "2025-06-26T11:27:20.918046",
-  "updatedAt": "2025-06-26T22:02:33.8391"
-}
-```
-
-### Delete Transporter
-**DELETE** `/transporters/delete-transporter/{transporterId}`
-
-Deletes a transporter account.
-
-**Path Parameters:**
-- `transporterId` (Long) - Transporter ID
-
-**Response:** `200 OK`
-```json
-{
-  "message": "transporter deleted successfully",
-  "status": true
-}
-```
-
----
-
-## 🏠 Transporter Address Management
-
-### Add Address
-**POST** `/transporters/{transporterId}/address/add`
-
-Adds an address for a transporter.
-
-**Path Parameters:**
-- `transporterId` (Long) - Transporter ID
-
-**Request Body:**
-```json
-{
-  "transporterId": 1,
-  "street": "123 Main Street",
-  "city": "New York",
-  "state": "NY",
-  "zipCode": "10001",
-  "country": "USA"
-}
-```
-
-**Response:** `201 Created`
-
-### Update Address
-**PUT** `/transporters/address/update/{addressId}`
-
-Updates an existing address.
-
-**Path Parameters:**
-- `addressId` (Long) - Address ID
-
-**Request Body:**
-```json
-{
-  "transporterId": 1,
-  "street": "456 Updated Street",
-  "city": "New York",
-  "state": "NY",
-  "zipCode": "10002",
-  "country": "USA"
-}
-```
-
-**Response:** `200 OK`
-
-### Get Address by ID
-**GET** `/transporters/address/getaddressbyid/{addressId}`
-
-Retrieves address information by ID.
-
-**Path Parameters:**
-- `addressId` (Long) - Address ID
-
-**Response:** `200 OK`
-
-### Get Address by Transporter Email
-**GET** `/transporters/address/getaddressbyemail/{emailId}`
-
-Retrieves address information by transporter email.
-
-**Path Parameters:**
-- `emailId` (String) - Transporter email
-
-**Response:** `200 OK`
-
----
-
-## 🚗 Vehicle Management
-
-### Add Vehicle
-**POST** `/transporters/{transporterId}/vehicle/add`
-
-Adds a vehicle for a transporter.
-
-**Path Parameters:**
-- `transporterId` (Long) - Transporter ID
-
-**Request Body:**
-```json
-{
-  "transporterId": 1,
-  "vehicleType": "truck",
-  "vehicleNumber": "ABC123",
-  "vehicleMake": "Ford",
-  "vehicleModel": "Transit",
-  "owner": "self"
-}
-```
-
-**Response:** `201 Created`
-
-### Update Vehicle
-**PUT** `/transporters/{transporterId}/vehicle/update`
-
-Updates vehicle information.
-
-**Path Parameters:**
-- `transporterId` (Long) - Transporter ID
-
-**Request Body:**
-```json
-{
-  "transporterId": 1,
-  "vehicleType": "pickup",
-  "vehicleNumber": "XYZ789",
-  "vehicleMake": "Toyota",
-  "vehicleModel": "Hilux",
-  "owner": "rental"
-}
-```
-
-**Response:** `200 OK`
-
-### Get Vehicle by ID
-**GET** `/transporters/vehicle/getvehiclebyid/{vehicleId}`
-
-Retrieves vehicle information by ID.
-
-**Path Parameters:**
-- `vehicleId` (Long) - Vehicle ID
-
-**Response:** `200 OK`
-
-### Get Vehicle by Transporter
-**GET** `/transporters/vehicle/getvehiclebytransporter/{transporterId}`
-
-Retrieves vehicle information by transporter ID.
-
-**Path Parameters:**
-- `transporterId` (Long) - Transporter ID
-
-**Response:** `200 OK`
-
----
-
-## 📦 Order Management
-
-### Create Order
-**POST** `/order/create`
-
-Creates a new order.
-
-**Request Body:**
-```json
-{
-  "userID": 1,
   "pickupLocation": {
-    "address": "123 Pickup Street",
-    "pincode": 12345,
+    "address": "123 Main Street, New York, NY 10001",
     "latitude": 40.7128,
     "longitude": -74.0060,
     "contactPerson": "John Doe",
-    "contactPhone": 1234567890,
-    "instructions": "Ring the bell"
+    "contactPhone": "+1234567890",
+    "instructions": "Ring doorbell twice"
   },
   "dropLocation": {
-    "address": "456 Drop Avenue",
-    "pincode": 54321,
-    "latitude": 40.7589,
-    "longitude": -73.9851,
+    "address": "456 Oak Avenue, Boston, MA 02101",
+    "latitude": 42.3601,
+    "longitude": -71.0589,
     "contactPerson": "Jane Smith",
-    "contactPhone": 0987654321,
+    "contactPhone": "+0987654321",
     "instructions": "Leave at reception"
   },
   "orderDetails": {
-    "itemName": "Furniture",
-    "description": "Living room sofa",
-    "category": "Furniture",
-    "isFragile": false,
-    "notes": "Handle with care",
+    "itemName": "Electronics Package",
+    "description": "Laptop and accessories",
+    "weight": 5.5,
     "dimensions": {
-      "length": 200.0,
-      "width": 90.0,
-      "height": 80.0
+      "length": 40,
+      "width": 30,
+      "height": 15
+    },
+    "value": 1200.00,
+    "category": "ELECTRONICS",
+    "isFragile": true,
+    "notes": "Handle with care"
+  },
+  "deliveryType": "STANDARD",
+  "scheduledPickupTime": "2024-01-16T09:00:00Z"
+}
+```
+
+### Get User Orders
+```http
+GET /users/orders?status=ACTIVE&page=0&size=10&sort=createdAt,desc
+Authorization: Bearer <token>
+```
+
+## Transporter APIs
+
+### Register Transporter
+```http
+POST /auth/transporters/register
+Content-Type: application/json
+
+{
+  "name": "Mike Transport Services",
+  "email": "mike@transport.com",
+  "password": "securePassword123",
+  "phone": "+1234567890",
+  "licenseNumber": "TRP123456789",
+  "vehicleDetails": {
+    "vehicleType": "TRUCK",
+    "vehicleNumber": "ABC-1234",
+    "capacity": 1000,
+    "dimensions": {
+      "length": 6.0,
+      "width": 2.5,
+      "height": 2.8
     }
   },
-  "deliveryType": "standard",
-  "scheduledPickupTime": "2024-01-20T14:00:00"
-}
-```
-
-**Response:** `201 Created`
-```json
-{
-  "id": 1,
-  "userID": 1,
-  "transporterId": null,
-  "pickupLocation": { /* pickup location object */ },
-  "dropLocation": { /* drop location object */ },
-  "orderDetails": { /* order details object */ },
-  "deliveryType": "standard",
-  "scheduledPickupTime": "2024-01-20T14:00:00",
-  "createdAt": "2024-01-15T10:30:00",
-  "updatedAt": "2024-01-15T10:30:00",
-  "price": 150.00,
-  "status": "pending"
-}
-```
-
-### Update Order
-**PUT** `/order/update-order/{orderId}`
-
-Updates an existing order.
-
-**Path Parameters:**
-- `orderId` (Long) - Order ID
-
-**Request Body:** Same as create order
-
-**Response:** `200 OK`
-
-### Get All Orders by User
-**GET** `/order/get-all-orders/{userId}`
-
-Retrieves all orders for a specific user.
-
-**Path Parameters:**
-- `userId` (Long) - User ID
-
-**Response:** `200 OK`
-```json
-[
-  {
-    "id": 1,
-    "userID": 1,
-    /* ... order details ... */
+  "address": {
+    "street": "456 Transport Ave",
+    "city": "Chicago",
+    "state": "IL",
+    "zipCode": "60601",
+    "country": "USA"
   }
-]
+}
 ```
 
-### Get Order by ID
-**GET** `/order/getorderbyid/{orderId}`
+### Get Nearby Orders
+```http
+GET /transporters/orders/nearby?latitude=41.8781&longitude=-87.6298&radius=50&page=0&size=10
+Authorization: Bearer <token>
+```
 
-Retrieves a specific order by ID.
+### Accept Order
+```http
+POST /transporters/orders/{orderId}/accept
+Authorization: Bearer <token>
+Content-Type: application/json
 
-**Path Parameters:**
-- `orderId` (Long) - Order ID
+{
+  "proposedCost": 115.00,
+  "estimatedPickupTime": "2024-01-16T09:30:00Z",
+  "estimatedDeliveryTime": "2024-01-16T16:00:00Z",
+  "notes": "Can deliver earlier if needed"
+}
+```
 
-**Response:** `200 OK`
+### Update Order Status
+```http
+PUT /transporters/orders/{orderId}/status
+Authorization: Bearer <token>
+Content-Type: application/json
 
-### Get Orders by City and Status
-**GET** `/order/get-orders-by-city/{city}/{status}`
+{
+  "status": "PICKED_UP",
+  "notes": "Package collected successfully",
+  "location": {
+    "latitude": 41.8781,
+    "longitude": -87.6298
+  },
+  "timestamp": "2024-01-16T09:45:00Z"
+}
+```
 
-Retrieves orders filtered by city and status.
+### Transporter Dashboard
+```http
+GET /transporters/dashboard
+Authorization: Bearer <token>
+```
 
-**Path Parameters:**
-- `city` (String) - City name
-- `status` (String) - Order status
-
-**Response:** `200 OK`
+Response:
 ```json
-[
-  {
-    "id": 1,
-    "userID": 1,
-    /* ... order details ... */
+{
+  "success": true,
+  "data": {
+    "summary": {
+      "totalEarnings": 2450.75,
+      "monthlyEarnings": 850.25,
+      "totalDeliveries": 324,
+      "monthlyDeliveries": 45,
+      "averageRating": 4.7,
+      "activeOrders": 3,
+      "completionRate": 98.5
+    },
+    "earnings": {
+      "today": 230.50,
+      "thisWeek": 1150.75,
+      "thisMonth": 850.25
+    }
   }
-]
-```
-
-### Delete Order
-**DELETE** `/order/delete-order/{orderId}`
-
-Deletes an order.
-
-**Path Parameters:**
-- `orderId` (Long) - Order ID
-
-**Response:** `200 OK`
-```json
-{
-  "message": "order deleted successfully",
-  "status": true
 }
 ```
 
----
+## Order Management
 
-## 📊 Data Models
+### Get Order Details
+```http
+GET /orders/{orderId}
+Authorization: Bearer <token>
+```
 
-### UserDto
-```json
+### Rate Order (Users only)
+```http
+POST /orders/{orderId}/rate
+Authorization: Bearer <token>
+Content-Type: application/json
+
 {
-  "userId": "Long",
-  "name": "String (required)",
-  "email": "String (required, valid email format)",
-  "password": "String (required, 8-24 characters)"
+  "rating": 5,
+  "review": "Excellent service! Package delivered on time.",
+  "tags": ["PUNCTUAL", "CAREFUL", "PROFESSIONAL"]
 }
 ```
 
-### TransporterDto
-```json
+## Utility APIs
+
+### Calculate Shipping Cost
+```http
+POST /common/calculate-cost
+Content-Type: application/json
+
 {
-  "transporterId": "Long (nullable)",
-  "name": "String (required)",
-  "email": "String (required)",
-  "password": "String (required)",
-  "phone": "String (required)",
-  "createdAt": "LocalDateTime",
-  "updatedAt": "LocalDateTime"
+  "pickupLocation": {
+    "latitude": 40.7128,
+    "longitude": -74.0060
+  },
+  "dropLocation": {
+    "latitude": 42.3601,
+    "longitude": -71.0589
+  },
+  "weight": 15.5,
+  "dimensions": {
+    "length": 40,
+    "width": 30,
+    "height": 15
+  },
+  "deliveryType": "STANDARD",
+  "vehicleType": "VAN"
 }
 ```
 
-### TransporterAddressDto
-```json
-{
-  "addressId": "Long",
-  "transporterId": "Long (required)",
-  "street": "String (required)",
-  "city": "String (required)",
-  "state": "String (required)",
-  "zipCode": "String (required)",
-  "country": "String (required)"
-}
+### Get Vehicle Types
+```http
+GET /common/vehicle-types
 ```
 
-### VehicleDetailsDto
+Response:
 ```json
 {
-  "vehicleId": "Long",
-  "transporterId": "Long (required)",
-  "vehicleType": "String (required, e.g., 'truck', 'pickup')",
-  "vehicleNumber": "String (required)",
-  "vehicleMake": "String (required)",
-  "vehicleModel": "String (required)",
-  "owner": "String (required, 'self' or 'rental')"
-}
-```
-
-### OrderDto
-```json
-{
-  "id": "Long",
-  "userID": "Long (required)",
-  "transporterId": "Long (nullable)",
-  "pickupLocation": "PickupLocationDto (required)",
-  "dropLocation": "DropLocationDto (required)",
-  "orderDetails": "OrderDetailsDto (required)",
-  "deliveryType": "String (required)",
-  "scheduledPickupTime": "LocalDateTime (required)",
-  "createdAt": "LocalDateTime",
-  "updatedAt": "LocalDateTime",
-  "price": "BigDecimal",
-  "status": "String"
-}
-```
-
-### PickupLocationDto / DropLocationDto
-```json
-{
-  "address": "String (required)",
-  "pincode": "Long (required)",
-  "latitude": "BigDecimal (required)",
-  "longitude": "BigDecimal (required)",
-  "contactPerson": "String (required)",
-  "contactPhone": "Long (required)",
-  "instructions": "String (optional)"
-}
-```
-
-### OrderDetailsDto
-```json
-{
-  "itemName": "String (required)",
-  "description": "String (optional)",
-  "category": "String (required)",
-  "isFragile": "Boolean (required)",
-  "notes": "String (optional)",
-  "dimensions": "DimensionsDto (optional)"
-}
-```
-
-### DimensionsDto
-```json
-{
-  "length": "Double (positive)",
-  "width": "Double (positive)",
-  "height": "Double (positive)"
-}
-```
-
-### OrderRequest
-```json
-{
-  "id": "Long",
-  "userID": "Long (required)",
-  "pickupLocation": "PickupLocationDto (required)",
-  "dropLocation": "DropLocationDto (required)",
-  "orderDetails": "OrderDetailsDto (required)",
-  "deliveryType": "String (required)",
-  "scheduledPickupTime": "LocalDateTime (required)",
-  "createdAt": "LocalDateTime",
-  "updatedAt": "LocalDateTime"
-}
-```
-
----
-
-## ❌ Error Responses
-
-### Validation Errors
-**400 Bad Request**
-```json
-{
-  "message": "Validation failed",
-  "errors": [
+  "success": true,
+  "data": [
     {
-      "field": "email",
-      "message": "must be a well-formed email address"
+      "type": "BIKE",
+      "name": "Motorcycle",
+      "maxWeight": 20,
+      "maxDimensions": {
+        "length": 60,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "type": "TRUCK",
+      "name": "Truck",
+      "maxWeight": 2000,
+      "maxDimensions": {
+        "length": 600,
+        "width": 250,
+        "height": 280
+      }
     }
   ]
 }
 ```
 
-### Not Found
-**404 Not Found**
+## Order Status Flow
+
+```
+PENDING → ACCEPTED → PICKED_UP → IN_TRANSIT → DELIVERED → COMPLETED
+          ↓
+        REJECTED
+          ↓
+       CANCELLED
+```
+
+### Order Statuses
+- `PENDING` - Waiting for transporter acceptance
+- `ACCEPTED` - Accepted by transporter
+- `REJECTED` - Rejected by transporter
+- `CANCELLED` - Cancelled by user
+- `PICKED_UP` - Package collected
+- `IN_TRANSIT` - Package in transit
+- `DELIVERED` - Package delivered
+- `COMPLETED` - Order completed and rated
+
+### Vehicle Types
+- `BIKE` - Motorcycle/Scooter (max 20kg)
+- `CAR` - Personal car (max 100kg)
+- `VAN` - Small commercial vehicle (max 500kg)
+- `TRUCK` - Large commercial vehicle (max 2000kg)
+
+### Delivery Types
+- `STANDARD` - Regular delivery (1-2 days)
+- `EXPRESS` - Fast delivery (same day)
+- `SCHEDULED` - Delivery at specific time
+
+## Error Handling
+
+### Standard Error Response
 ```json
 {
-  "message": "Resource not found",
-  "timestamp": "2024-01-15T10:30:00"
+  "success": false,
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "Invalid input data",
+    "details": [
+      {
+        "field": "email",
+        "message": "Email format is invalid"
+      }
+    ],
+    "timestamp": "2024-01-15T14:45:00Z",
+    "path": "/api/v1/auth/users/register"
+  }
 }
 ```
 
-### Internal Server Error
-**500 Internal Server Error**
-```json
+### Common Error Codes
+- `VALIDATION_ERROR` - Invalid input data
+- `AUTHENTICATION_ERROR` - Invalid credentials
+- `AUTHORIZATION_ERROR` - Insufficient permissions
+- `RESOURCE_NOT_FOUND` - Resource not found
+- `BUSINESS_LOGIC_ERROR` - Business rule violation
+- `INTERNAL_SERVER_ERROR` - Server error
+
+## Rate Limiting
+
+- Authentication endpoints: 5 requests/minute per IP
+- Order creation: 10 requests/hour per user
+- Location updates: 60 requests/minute per transporter
+- General API calls: 1000 requests/hour per user
+
+## Google Maps Integration
+
+The API fully supports Google Maps integration:
+
+### Location Storage
+Both pickup and drop locations store:
+- `latitude` and `longitude` from Google Maps
+- Full address string
+- Contact information
+
+### Distance Calculation
+The cost calculation API uses coordinates to:
+- Calculate exact distances
+- Determine shipping costs
+- Estimate delivery times
+
+### Real-time Tracking
+Transporters can update their location in real-time:
+```http
+PUT /transporters/location
+Authorization: Bearer <token>
+Content-Type: application/json
+
 {
-  "message": "Internal server error occurred",
-  "timestamp": "2024-01-15T10:30:00"
+  "latitude": 41.8781,
+  "longitude": -87.6298,
+  "isAvailable": true
 }
 ```
 
----
+## Tech Stack
 
-## 🔧 Development Setup
+- **Framework**: Spring Boot 3.x
+- **Database**: PostgreSQL/MySQL
+- **Authentication**: JWT with Spring Security
+- **Documentation**: OpenAPI 3.0
+- **Testing**: JUnit 5, Mockito
 
-### Prerequisites
-- Java 17 or higher
-- Maven 3.6 or higher
-- Spring Boot 3.x
+## Getting Started
 
-### Running the Application
-```bash
-mvn spring-boot:run
+1. Clone the repository
+2. Configure database in `application.properties`
+3. Run `mvn spring-boot:run`
+4. Access API at `http://localhost:8080`
+5. View documentation at `http://localhost:8080/swagger-ui.html`
+
+## Environment Setup
+
+```properties
+# Database Configuration
+spring.datasource.url=jdbc:postgresql://localhost:5432/transport_booking
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+
+# JWT Configuration
+jwt.secret=your-256-bit-secret
+jwt.expiration=3600
+
+# Server Configuration
+server.port=8080
 ```
 
-The application will be available at `http://localhost:8080`
-
 ---
 
-## 📝 Notes
-
-- All endpoints require proper request validation
-- Date/time fields use ISO 8601 format
-- Coordinates use decimal degrees format
-- Phone numbers are stored as Long values
-- Passwords should be properly hashed in production
-- Consider implementing proper authentication and authorization
-
----
-
-## 🤝 Contributing
-
-Please follow the existing code structure and naming conventions when contributing to this project.
-
-## 📄 License
-
-*License information to be added*
+**API Version**: 1.0  
+**Last Updated**: June 2025

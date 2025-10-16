@@ -14,5 +14,4 @@ public class TransporterRequest {
     private String email;
     private String password;
     private String phone;
-
 }

@@ -1,8 +1,6 @@
 package com.mover.entities.orderrelated;
 
 import com.mover.entities.User;
-import com.mover.entities.transporterrelated.Transporter;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,8 +26,9 @@ public class Order {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Column(name = "transporter_id",nullable = true)
-    private Long transporterId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "transporter_id", nullable = true)
+    private User transporter;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pickup_location_id")
