@@ -36,7 +36,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/users/delete-user/**").hasRole("ADMIN")
 
                         // User endpoints - require USER or ADMIN role
-                        .requestMatchers(HttpMethod.GET, "/users/getuserbyid/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/getuserbyid/**").hasAnyRole("USER","TRANSPORTER", "ADMIN")
                         .requestMatchers(HttpMethod.GET, "/users/getuserbyemail/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/users/update-user/**").hasAnyRole("USER","TRANSPORTER","ADMIN")
 
